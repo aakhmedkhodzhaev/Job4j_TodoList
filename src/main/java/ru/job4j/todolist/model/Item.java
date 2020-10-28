@@ -25,6 +25,15 @@ public class Item {
     public Item() {
     }
 
+    public Item(String description) {
+        this.description = description;
+    }
+
+    public Item(Long id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
     public Item(String description, LocalDateTime created, Boolean done) {
         this.description = description;
         this.created = created;

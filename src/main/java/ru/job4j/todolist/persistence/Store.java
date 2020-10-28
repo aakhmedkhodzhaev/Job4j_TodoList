@@ -2,7 +2,7 @@ package ru.job4j.todolist.persistence;
 
 import ru.job4j.todolist.model.Item;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Store {
 
@@ -10,8 +10,10 @@ public interface Store {
 
     void updateTask(String id, Item item);
 
+    boolean delete(String id);
+
     Item getById(Long id);
 
-    List<Item> getAllTask();
+    Collection<Item> getAllTask();
 
 }

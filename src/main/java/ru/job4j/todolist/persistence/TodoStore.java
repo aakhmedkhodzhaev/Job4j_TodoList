@@ -10,7 +10,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
+import java.util.logging.Logger;
 
 public class TodoStore implements Store, AutoCloseable {
 
@@ -19,6 +20,8 @@ public class TodoStore implements Store, AutoCloseable {
     public static TodoStore getInstance() {
         return INSTANCE;
     }
+
+    private static final Logger log = Logger.getLogger(Item.class.toString());
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
@@ -46,9 +49,9 @@ public class TodoStore implements Store, AutoCloseable {
     @Override
     public void updateTask(String id, Item item) {
         try {
-            int itemId = Integer.parseInt(id);
             connectionWork();
-            item = session.get(Item.class, itemId);
+            Long itemId = Long.valueOf(id);
+            item.setId(itemId);
             session.update(item);
             transaction.commit();
         } catch (Exception e) {
@@ -58,19 +61,49 @@ public class TodoStore implements Store, AutoCloseable {
         } finally {
             session.close();
         }
+    }
 
+    @Override
+    public boolean delete(String id) {
+        Boolean result;
+        try {
+            connectionWork();
+            long itemId = Long.valueOf(id);
+            Item item = new Item();
+            item.setId(itemId);
+            if (item != null) {
+                session.delete(item);
+                transaction.commit();
+                result = true;
+            } else {
+                result = false;
+            }
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            result = false;
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return result;
     }
 
     @Override
     public Item getById(Long id) {
         connectionWork();
-        return session.get(Item.class, id);
+        Item result = session.get(Item.class, id);
+        session.close();
+        return result;
     }
 
     @Override
-    public List<Item> getAllTask() {
+    public Collection<Item> getAllTask() {
         connectionWork();
-        return session.createQuery("from Item").list();
+        Collection<Item> result = session.createQuery("from Item").list();
+        session.close();
+        return result;
     }
 
     @Override
@@ -78,16 +111,33 @@ public class TodoStore implements Store, AutoCloseable {
         StandardServiceRegistryBuilder.destroy(registry);
     }
 
-    private void connectionWork() throws HibernateException {
+    private final void connectionWork() throws HibernateException {
         session = sf.openSession();
         transaction = session.beginTransaction();
     }
 
     public static void main(String[] args) {
         Item item = new Item();
-        TodoStore.getInstance().addTask(new Item("sTest", LocalDateTime.now(), true));
+        item.setDescription("Desc");
+        item.setCreated(LocalDateTime.now());
         item.setDone(true);
-        List<Item> result = TodoStore.getInstance().getAllTask();
-        System.out.println(result);
+        TodoStore.getInstance().addTask(item);
+        Collection<Item> result = TodoStore.getInstance().getAllTask();
+        log.info("Add Task and All Result : " + result);
+
+        item.setDescription("Asc");
+        item.setCreated(LocalDateTime.now());
+        item.setDone(true);
+        TodoStore.getInstance().updateTask("2", item);
+        log.info("Update Task : " + item);
+
+        Item rsl = TodoStore.getInstance().getById(Long.valueOf(2));
+        log.info("Get By Id Task : " + rsl);
+
+        TodoStore.getInstance().delete("48");
+        Collection<Item> results = TodoStore.getInstance().getAllTask();
+        for (Item it : results) {
+            log.info("Result" + it);
+        }
     }
 }
