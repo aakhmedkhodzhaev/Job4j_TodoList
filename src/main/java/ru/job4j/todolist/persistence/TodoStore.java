@@ -21,7 +21,7 @@ public class TodoStore implements Store, AutoCloseable {
         return INSTANCE;
     }
 
-    private static final Logger log = Logger.getLogger(Item.class.toString());
+    private static final Logger Log = Logger.getLogger(Item.class.toString());
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
@@ -123,21 +123,21 @@ public class TodoStore implements Store, AutoCloseable {
         item.setDone(true);
         TodoStore.getInstance().addTask(item);
         Collection<Item> result = TodoStore.getInstance().getAllTask();
-        log.info("Add Task and All Result : " + result);
+        Log.info("Add Task and All Result : " + result);
 
         item.setDescription("Asc");
         item.setCreated(LocalDateTime.now());
         item.setDone(true);
         TodoStore.getInstance().updateTask("2", item);
-        log.info("Update Task : " + item);
+        Log.info("Update Task : " + item);
 
         Item rsl = TodoStore.getInstance().getById(Long.valueOf(2));
-        log.info("Get By Id Task : " + rsl);
+        Log.info("Get By Id Task : " + rsl);
 
-        TodoStore.getInstance().delete("48");
+        TodoStore.getInstance().delete("49");
         Collection<Item> results = TodoStore.getInstance().getAllTask();
         for (Item it : results) {
-            log.info("Result" + it);
+            Log.info("Result" + it);
         }
     }
 }
