@@ -34,6 +34,8 @@ public class TodoStore implements Store, AutoCloseable {
     public void addTask(Item item) {
         try {
             connectionWork();
+            item.setCreated(LocalDateTime.now());
+            item.setDone(false);
             session.save(item);
             transaction.commit();
         } catch (Exception e) {
@@ -115,7 +117,7 @@ public class TodoStore implements Store, AutoCloseable {
         session = sf.openSession();
         transaction = session.beginTransaction();
     }
-
+/*
     public static void main(String[] args) {
         Item item = new Item();
         item.setDescription("Desc");
@@ -139,5 +141,5 @@ public class TodoStore implements Store, AutoCloseable {
         for (Item it : results) {
             Log.info("Result" + it);
         }
-    }
+    }*/
 }
