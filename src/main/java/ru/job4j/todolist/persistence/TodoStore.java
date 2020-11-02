@@ -104,6 +104,7 @@ public class TodoStore implements Store, AutoCloseable {
     public Collection<Item> getAllTask() {
         connectionWork();
         Collection<Item> result = session.createQuery("from Item").list();
+        session.close();
         return result;
     }
 
