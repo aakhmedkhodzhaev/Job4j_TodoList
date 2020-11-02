@@ -38,7 +38,7 @@
                 Новая Задача.
             </div>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/json?id=<%=item.getId()%>" method="post">
+                <form action="<%=request.getContextPath()%>/ajax?id=<%=item.getId()%>" method="post">
                     <div class="form-group">
                         <label>Описание</label>
                         <input type="text" class="form-control" name="description" value="<%=item.getDescription()%>">

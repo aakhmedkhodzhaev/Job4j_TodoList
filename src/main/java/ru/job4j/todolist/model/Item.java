@@ -1,7 +1,7 @@
 package ru.job4j.todolist.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +17,7 @@ public class Item {
     private String description;
 
     @Column(name = "created")
-    private LocalDateTime created;
+    private LocalDate created;
 
     @Column(name = "done")
     private Boolean done;
@@ -25,22 +25,19 @@ public class Item {
     public Item() {
     }
 
-    public Item(String description) {
-        this.description = description;
-    }
 
     public Item(Long id, String description) {
         this.id = id;
         this.description = description;
     }
 
-    public Item(String description, LocalDateTime created, Boolean done) {
+    public Item(String description, LocalDate created, Boolean done) {
         this.description = description;
         this.created = created;
         this.done = done;
     }
 
-    public Item(Long id, String description, LocalDateTime created, Boolean done) {
+    public Item(Long id, String description, LocalDate created, Boolean done) {
         this.id = id;
         this.description = description;
         this.created = created;
@@ -63,11 +60,11 @@ public class Item {
         this.description = description;
     }
 
-    public LocalDateTime getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 
@@ -94,5 +91,14 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    public String toJsonString() {
+        return "{" +
+                "\"id\"" + ":" + id + "," +
+                "\"description\"" + ":" + "\"" + description + "\"," +
+                "\"date\"" + ":" + "\"" + created + "\"," +
+                "\"done\"" + ":" + "\"" + done + "\"" +
+                "}";
     }
 }

@@ -32,6 +32,6 @@ public class AjaxController extends HttpServlet {
         String description = req.getParameter("description");
         TodoStore.getInstance().addTask(new Item(Long.valueOf(id), description));
 
-        resp.sendRedirect(req.getContextPath()+"/json");
+        resp.sendRedirect(req.getContextPath()+"/ajax");
     }
 }

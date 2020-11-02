@@ -9,7 +9,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -34,7 +34,7 @@ public class TodoStore implements Store, AutoCloseable {
     public void addTask(Item item) {
         try {
             connectionWork();
-            item.setCreated(LocalDateTime.now());
+            item.setCreated(LocalDate.now());
             item.setDone(false);
             session.save(item);
             transaction.commit();
@@ -104,7 +104,6 @@ public class TodoStore implements Store, AutoCloseable {
     public Collection<Item> getAllTask() {
         connectionWork();
         Collection<Item> result = session.createQuery("from Item").list();
-        session.close();
         return result;
     }
 
@@ -117,26 +116,26 @@ public class TodoStore implements Store, AutoCloseable {
         session = sf.openSession();
         transaction = session.beginTransaction();
     }
-/*
-    public static void main(String[] args) {
+
+  /* public static void main(String[] args) {
         Item item = new Item();
-        item.setDescription("Desc");
-        item.setCreated(LocalDateTime.now());
+       item.setDescription("Desc");
+        item.setCreated(LocalDate.now());
         item.setDone(true);
         TodoStore.getInstance().addTask(item);
         Collection<Item> result = TodoStore.getInstance().getAllTask();
         Log.info("Add Task and All Result : " + result);
 
         item.setDescription("Asc");
-        item.setCreated(LocalDateTime.now());
+        item.setCreated(LocalDate.now());
         item.setDone(true);
-        TodoStore.getInstance().updateTask("2", item);
+        TodoStore.getInstance().updateTask("25", item);
         Log.info("Update Task : " + item);
 
         Item rsl = TodoStore.getInstance().getById(Long.valueOf(2));
         Log.info("Get By Id Task : " + rsl);
 
-        TodoStore.getInstance().delete("49");
+        TodoStore.getInstance().delete("58");
         Collection<Item> results = TodoStore.getInstance().getAllTask();
         for (Item it : results) {
             Log.info("Result" + it);

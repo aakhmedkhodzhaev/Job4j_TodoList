@@ -12,6 +12,17 @@
 
     <servlet-mapping>
         <servlet-name>AjaxController</servlet-name>
+        <url-pattern>/ajax</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ItemController</servlet-name>
+        <servlet-class>ru.job4j.todolist.controller.ItemController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ItemController</servlet-name>
         <url-pattern>/json</url-pattern>
     </servlet-mapping>
 
