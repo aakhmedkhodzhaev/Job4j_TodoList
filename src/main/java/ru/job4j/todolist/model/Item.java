@@ -78,26 +78,25 @@ public class Item {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Item)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
         Item item = (Item) o;
-        return Objects.equals(getId(), item.getId());
+        return Objects.equals(getId(), item.getId()) &&
+                Objects.equals(getDescription(), item.getDescription()) &&
+                Objects.equals(getCreated(), item.getCreated()) &&
+                Objects.equals(getDone(), item.getDone());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getId(), getDescription(), getCreated(), getDone());
     }
 
     public String toJsonString() {
         return "{" +
                 "\"id\"" + ":" + id + "," +
                 "\"description\"" + ":" + "\"" + description + "\"," +
-                "\"date\"" + ":" + "\"" + created + "\"," +
+                "\"created\"" + ":" + "\"" + created + "\"," +
                 "\"done\"" + ":" + "\"" + done + "\"" +
                 "}";
     }

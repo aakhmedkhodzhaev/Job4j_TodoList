@@ -16,6 +16,7 @@ public class AjaxController extends HttpServlet {
 
     private Gson gson = new Gson();
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -26,6 +27,7 @@ public class AjaxController extends HttpServlet {
         resp.getWriter().write(json);
     }
 
+   @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         req.setCharacterEncoding("UTF-8");
         String id = req.getParameter("id");

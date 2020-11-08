@@ -1,5 +1,7 @@
 package ru.job4j.todolist.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.persistence.TodoStore;
 
@@ -7,13 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class ItemController extends HttpServlet {
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Collection<Item> items = TodoStore.getInstance().getAllTask();
         StringBuilder stringBuilder = new StringBuilder();
@@ -31,5 +36,22 @@ public class ItemController extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         writer.println(stringBuilder);
         writer.flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        String json = "";
+        if (bufferedReader != null) {
+            json = bufferedReader.readLine();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        Item item = mapper.readValue(json, Item.class);
+        resp.setContentType("application/json");
+
+        TodoStore.getInstance().addTask(item);
+        mapper.writeValue(resp.getOutputStream(), item);
     }
 }
