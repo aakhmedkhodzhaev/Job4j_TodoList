@@ -1,7 +1,6 @@
 package ru.job4j.todolist.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.persistence.TodoStore;
 
@@ -20,7 +19,15 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Collection<Item> items = TodoStore.getInstance().getAllTask();
+        Collection<Item> items;
+        String status = req.getParameter("status");
+        if (status.equals("true")) {
+            items = TodoStore.getInstance().getStatusTask(true);
+        } else if (status.equals("false")) {
+            items = TodoStore.getInstance().getStatusTask(false);
+        } else {
+            items = TodoStore.getInstance().getAllTask();
+        }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
         int lengthItems = items.size();
@@ -49,9 +56,20 @@ public class ItemController extends HttpServlet {
 
         ObjectMapper mapper = new ObjectMapper();
         Item item = mapper.readValue(json, Item.class);
+        Long itemId = item.getId();
         resp.setContentType("application/json");
-
-        TodoStore.getInstance().addTask(item);
+     if (itemId == null || itemId == 0) {
+            TodoStore.getInstance().addTask(item);
+        } else {
+         Boolean done;
+         Item result = TodoStore.getInstance().getById(itemId);
+         if(result.getDone() == true){
+             done = false;
+         } else{
+             done = true;
+         }
+            TodoStore.getInstance().updateTask(String.valueOf(item.getId()), done);
+        }
         mapper.writeValue(resp.getOutputStream(), item);
     }
 }

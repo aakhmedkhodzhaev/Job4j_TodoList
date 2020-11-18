@@ -28,33 +28,29 @@
 
 <!--get items from db-->
 <script>
-    setInterval(getTodoList, 11000);
+    setInterval(getTodoList, 25000);
 
-    function getTodoList() {
-        var urlGetQuery = './json';
+    function getTodoList(id) {
+        var urlGetQuery = './json?status=' + id;
         $.ajax(urlGetQuery).done(function (data) {
             var refreshBody = '';
             var json = JSON.parse(data);
-            var done = "";
             for (item in json) {
-                switch (json[item].done) {
-                    case 'true':
-                        done = 'Solved';
-                        break;
-                    default:
-                        done = 'Working';
-                        break;
+                refreshBody += '<tr><td>' + json[item].id.toString() + '</td><td>' + json[item].description
+                    + '</td><td>' + json[item].created + '</td><td>';
+                if (json[item].done.toString() === 'true') {
+                    refreshBody += '<input type="checkbox" id="' + json[item].id.toString() + '" onchange="changeStatus(this.id)" checked>' + '</td>';
+                } else {
+                    refreshBody += '<input type="checkbox" id="' + json[item].id.toString() + '" onchange="changeStatus(this.id)">' + '</td>';
                 }
-                refreshBody += '<tr><td>' + json[item].id + '</td><td>' + json[item].description
-                    + '</td><td>' + json[item].created + '</td><td>' + done + '</td></tr>';
+                refreshBody += '</tr>';
+
             }
             $("#todo_list").html(refreshBody);
         })
     }
-</script>
 
-<!-- add new task-->
-<script>
+    <!-- add new task-->
     function addTask() {
         var desc = $('#newItemDescription').val();
         if (!/[^ ]/.test(desc)) {
@@ -72,7 +68,8 @@
                 alert("Task was added");
                 alert(data.created);
                 var rowToAdd = '<tr><td>' + data.id + '</td><td>' + data.description + '</td><td>'
-                    + data.created + '</td><td>' + data.done + '</td></tr>';
+                    + data.created + '</td><td>'
+                    + '<input type="checkbox" id="' + data.id + '" onchange="changeStatus(this.id)">' + '</td></tr>';
                 $("#todo_list").append(rowToAdd);
             }
             if (data.success === false) {
@@ -80,25 +77,39 @@
             }
         })
     }
-</script>
 
-<script>
-    function statusBox(done) {
-        if (done === "true") {
+    <!-- change Status -->
+    function changeStatus(id) {
+        $.ajax("./json", {
+                type: "post",
+                data: JSON.stringify({
+                    id: id
+                }),
+                dataType: "json"
+            }
+        ).done(function (data) {
+            if (data.success === true) {
+
+            } else {
+
+            }
+        })
+    }
+
+    function statusBox(id) {
+        if (id === "true") {
             getTodoList("true");
         }
-        else if (done === "false") {
+        else if (id === "false") {
             getTodoList("false");
         }
         else {
             getTodoList("all");
         }
     }
-</script>
 
-<script>
     $(
-        getTodoList()
+        getTodoList("all")
     )
 </script>
 
@@ -108,12 +119,12 @@
     <h5>
         <form>
             <input type="text" id="newItemDescription" required pattern="^[a-zA-Z]+$">
-            <input type="button" value="Добавлени новой задачи" onclick="addTask()">
+            <input type="button" value="Добавление новой задачи" onclick="addTask()">
         </form>
     </h5>
     <h5> Текущий статус задач:
-        <td id="selectBox" name="selectBox" onchange="statusBox()">
-            <select>
+        <td>
+            <select onchange="statusBox(this.value)">
                 <option value="all">All</option>
                 <option value="false">Working</option>
                 <option value="true">Solved</option>

@@ -1,5 +1,13 @@
 package ru.job4j.todolist.model;
 
+/**
+ * @author Akhmedkhodzhaev A.A.
+ * @version 1.0 19.11.2020
+ * @task 2. Создать TODO list [3786#329659]
+ * @aim Работа с динамической веб страницей
+ * @others В index.html можно добавлять задачи, изменять статус
+ */
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;

@@ -49,12 +49,13 @@ public class TodoStore implements Store, AutoCloseable {
     }
 
     @Override
-    public void updateTask(String id, Item item) {
+    public void updateTask(String id, Boolean done) {
         try {
             connectionWork();
             Long itemId = Long.valueOf(id);
-            item.setId(itemId);
-            session.update(item);
+            Item result = session.get(Item.class, itemId);
+            result.setDone(done);
+            session.update(result);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -101,9 +102,17 @@ public class TodoStore implements Store, AutoCloseable {
     }
 
     @Override
+    public Collection<Item> getStatusTask(Boolean status) {
+        connectionWork();
+        Collection<Item> result = session.createQuery("from Item a where a.done = :done").setParameter("done", status).list(); //.getResultList()
+        session.close();
+        return result;
+    }
+
+    @Override
     public Collection<Item> getAllTask() {
         connectionWork();
-        Collection<Item> result = session.createQuery("from Item").list();
+        Collection<Item> result = session.createQuery("from Item order by 1").list();
         session.close();
         return result;
     }
@@ -117,29 +126,4 @@ public class TodoStore implements Store, AutoCloseable {
         session = sf.openSession();
         transaction = session.beginTransaction();
     }
-
-  /* public static void main(String[] args) {
-        Item item = new Item();
-       item.setDescription("Desc");
-        item.setCreated(LocalDate.now());
-        item.setDone(true);
-        TodoStore.getInstance().addTask(item);
-        Collection<Item> result = TodoStore.getInstance().getAllTask();
-        Log.info("Add Task and All Result : " + result);
-
-        item.setDescription("Asc");
-        item.setCreated(LocalDate.now());
-        item.setDone(true);
-        TodoStore.getInstance().updateTask("25", item);
-        Log.info("Update Task : " + item);
-
-        Item rsl = TodoStore.getInstance().getById(Long.valueOf(2));
-        Log.info("Get By Id Task : " + rsl);
-
-        TodoStore.getInstance().delete("58");
-        Collection<Item> results = TodoStore.getInstance().getAllTask();
-        for (Item it : results) {
-            Log.info("Result" + it);
-        }
-    }*/
 }

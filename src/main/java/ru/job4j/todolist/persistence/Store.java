@@ -8,11 +8,13 @@ public interface Store {
 
     void addTask(Item item);
 
-    void updateTask(String id, Item item);
+    void updateTask(String id, Boolean done);
 
     boolean delete(String id);
 
     Item getById(Long id);
+
+    Collection<Item> getStatusTask(Boolean status);
 
     Collection<Item> getAllTask();
 
