@@ -1,6 +1,5 @@
 package ru.job4j.todolist.persistence;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,15 +8,17 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 public class TodoStore implements Store, AutoCloseable {
 
     private final static TodoStore INSTANCE = new TodoStore();
 
-    public static TodoStore getInstance() {
+    public final static TodoStore getInstance() {
         return INSTANCE;
     }
 
@@ -27,94 +28,74 @@ public class TodoStore implements Store, AutoCloseable {
 
     private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
-    private Session session = null;
-    private Transaction transaction = null;
 
-    @Override
-    public void addTask(Item item) {
+    private <T> T tx(final Function<Session, T> command) {
+        final Session session = sf.openSession();
+        final Transaction tx = session.beginTransaction();
         try {
-            connectionWork();
-            item.setCreated(LocalDate.now());
-            item.setDone(false);
-            session.save(item);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
+            T rsl = command.apply(session);
+            tx.commit();
+            return rsl;
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
         } finally {
             session.close();
         }
     }
 
+
     @Override
-    public void updateTask(String id, Boolean done) {
-        try {
-            connectionWork();
-            Long itemId = Long.valueOf(id);
-            Item result = session.get(Item.class, itemId);
-            result.setDone(done);
-            session.update(result);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+    public Serializable addTask(Item item) {
+        item.setCreated(LocalDate.now());
+        item.setDone(false);
+        return this.tx(session -> session.save(item));
+    }
+
+    @Override
+    public void updateTask(Item item) {
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
+            if (item.getDone() == true) {
+                item.setDone(false);
+            } else {
+                item.setDone(true);
             }
-        } finally {
-            session.close();
+            session.update(item);
+            session.getTransaction().commit();
         }
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean delete(Item item) {
         Boolean result;
-        try {
-            connectionWork();
-            long itemId = Long.valueOf(id);
-            Item item = new Item();
-            item.setId(itemId);
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
             if (item != null) {
-                session.delete(item);
-                transaction.commit();
+                Item items = session.get(Item.class, item.getId());
+                session.delete(items);
                 result = true;
+                session.getTransaction().commit();
             } else {
                 result = false;
             }
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            result = false;
-            e.printStackTrace();
-        } finally {
-            session.close();
         }
         return result;
     }
 
     @Override
     public Item getById(Long id) {
-        connectionWork();
-        Item result = session.get(Item.class, id);
-        session.close();
-        return result;
+        return this.tx(session -> session.get(Item.class, id));
     }
 
     @Override
     public Collection<Item> getStatusTask(Boolean status) {
-        connectionWork();
-        Collection<Item> result = session.createQuery("from Item a where a.done = :done").setParameter("done", status).list(); //.getResultList()
-        session.close();
-        return result;
+        return this.tx(session -> session.createQuery("from Item a where a.done = :done order by 1").setParameter("done", status).list()); //.getResultList())result;);
     }
 
     @Override
     public Collection<Item> getAllTask() {
-        connectionWork();
-        Collection<Item> result = session.createQuery("from Item order by 1").list();
-        session.close();
-        return result;
+        return this.tx(session -> session.createQuery("from Item order by 1").list());
     }
 
     @Override
@@ -122,8 +103,4 @@ public class TodoStore implements Store, AutoCloseable {
         StandardServiceRegistryBuilder.destroy(registry);
     }
 
-    private final void connectionWork() throws HibernateException {
-        session = sf.openSession();
-        transaction = session.beginTransaction();
-    }
 }

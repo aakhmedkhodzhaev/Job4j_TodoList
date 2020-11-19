@@ -61,15 +61,11 @@ public class ItemController extends HttpServlet {
      if (itemId == null || itemId == 0) {
             TodoStore.getInstance().addTask(item);
         } else {
-         Boolean done;
          Item result = TodoStore.getInstance().getById(itemId);
-         if(result.getDone() == true){
-             done = false;
-         } else{
-             done = true;
-         }
-            TodoStore.getInstance().updateTask(String.valueOf(item.getId()), done);
+         TodoStore.getInstance().updateTask(result);
         }
+        item.getDone();
+        item.getDone();
         mapper.writeValue(resp.getOutputStream(), item);
     }
 }

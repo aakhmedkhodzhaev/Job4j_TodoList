@@ -14,15 +14,12 @@ import java.util.Collection;
 
 public class AjaxController extends HttpServlet {
 
-    private Gson gson = new Gson();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         Collection<Item> items = TodoStore.getInstance().getAllTask();
-
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(items);
         resp.getWriter().write(json);
     }
