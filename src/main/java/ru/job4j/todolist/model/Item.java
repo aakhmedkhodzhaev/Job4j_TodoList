@@ -21,7 +21,7 @@ public class Item {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "Description")
+    @Column(name = "description")
     private String description;
 
     @Column(name = "created")
