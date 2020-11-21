@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="todo_user")
+@Table(name = "todo_user")
 public class User {
 
     @Id
@@ -13,34 +13,55 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "name")
     private String name;
 
     @Column(name = "password")
     private String password;
 
-    public User(){
+    public User() {
         super();
     }
 
-    public Long getId(){
+    public static User of(String name) {
+        User user = new User();
+        user.name = name;
+        return user;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName(){
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -49,6 +70,7 @@ public class User {
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return Objects.equals(getId(), user.getId()) &&
+                Objects.equals(getEmail(), user.getEmail()) &&
                 Objects.equals(getName(), user.getName()) &&
                 Objects.equals(getPassword(), user.getPassword());
     }
@@ -56,6 +78,16 @@ public class User {
     @Override
     public int hashCode() {
 
-        return Objects.hash(getId(), getName(), getPassword());
+        return Objects.hash(getId(), getEmail(), getName(), getPassword());
     }
+
+    public String toJsonUserString() {
+        return "{" +
+                "\"id\"" + ":" + id + "," +
+                "\"email\"" + ":" + "\"" + email + "\"," +
+                "\"name\"" + ":" + "\"" + name + "\"," +
+                "\"password\"" + ":" + "\"" + password + "\"" +
+                "}";
+    }
+
 }
