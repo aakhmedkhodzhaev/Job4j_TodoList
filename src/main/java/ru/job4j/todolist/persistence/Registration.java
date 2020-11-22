@@ -1,17 +1,16 @@
 package ru.job4j.todolist.persistence;
 
-import jdk.nashorn.internal.runtime.options.Option;
 import ru.job4j.todolist.model.User;
 
 import java.util.Collection;
 
 public interface Registration {
 
-    void createUser(User user);
-
-    void updateUser(User user);
+    void save(User user);
 
     boolean dropUser(Long id);
+
+    boolean findByEmail(String email);
 
     User getById(Long id);
 
@@ -19,4 +18,5 @@ public interface Registration {
                    final String password);
 
     Collection<User> AllUser();
+
 }

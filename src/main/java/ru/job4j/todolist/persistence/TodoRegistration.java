@@ -29,7 +29,15 @@ public class TodoRegistration implements Registration, AutoCloseable {
 
 
     @Override
-    public void createUser(User user) {
+    public void save(User user) {
+        if (user.getId() == null) {
+            createUser(user);
+        } else {
+            updateUser(user);
+        }
+    }
+
+    private void createUser(User user) {
         try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.save(user);
@@ -37,8 +45,8 @@ public class TodoRegistration implements Registration, AutoCloseable {
         }
     }
 
-    @Override
-    public void updateUser(User user) {
+
+    private void updateUser(User user) {
         try (Session session = sf.openSession()) {
             session.beginTransaction();
             session.update(user);
@@ -64,6 +72,21 @@ public class TodoRegistration implements Registration, AutoCloseable {
     }
 
     @Override
+    public boolean findByEmail(String email) {
+        Boolean status;
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
+            User result = (User) session.createQuery("from todo_user u where u.email = :email").setParameter("email", email).getResultList();
+            if (result.getEmail() == email) {
+                status = true;
+            } else {
+                status = false;
+            }
+            return status;
+        }
+    }
+
+    @Override
     public User getById(Long id) {
         User user;
         try (Session session = sf.openSession()) {
@@ -74,11 +97,11 @@ public class TodoRegistration implements Registration, AutoCloseable {
     }
 
     @Override
-    public User getByData(final String email, final String password){
+    public User getByData(final String email, final String password) {
         User user;
-        try(Session session = sf.openSession()) {
+        try (Session session = sf.openSession()) {
             session.beginTransaction();
-            user = (User) session.createQuery("from todo_user t where t.email = :email And t.password = :password").setParameter(email, password).getResultList();
+            user = (User) session.createQuery("from todo_user t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
         }
         return user;
     }

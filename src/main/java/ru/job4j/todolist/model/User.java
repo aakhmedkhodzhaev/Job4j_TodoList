@@ -26,6 +26,12 @@ public class User {
         super();
     }
 
+    public User(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     public static User of(String name) {
         User user = new User();
         user.name = name;

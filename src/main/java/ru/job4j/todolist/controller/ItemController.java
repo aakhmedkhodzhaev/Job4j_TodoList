@@ -17,6 +17,8 @@ import java.util.Collection;
 
 public class ItemController extends HttpServlet {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Collection<Item> items;
