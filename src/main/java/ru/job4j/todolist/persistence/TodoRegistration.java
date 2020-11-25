@@ -96,7 +96,7 @@ public class TodoRegistration implements Registration, AutoCloseable {
         User user;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            user = (User) session.createQuery("from todo_user t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
+            user = (User) session.createQuery("from User t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
         }
         return user;
     }
@@ -106,7 +106,7 @@ public class TodoRegistration implements Registration, AutoCloseable {
         Collection<User> result;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            result = session.createQuery("From todo_user Order by 1").getResultList();
+            result = session.createQuery("From User Order by 1").getResultList();
         }
         return result;
     }
