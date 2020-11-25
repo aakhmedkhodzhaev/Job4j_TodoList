@@ -1,6 +1,5 @@
 package ru.job4j.todolist.persistence;
 
-import jdk.nashorn.internal.runtime.options.Option;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,6 +9,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -72,17 +72,12 @@ public class TodoRegistration implements Registration, AutoCloseable {
     }
 
     @Override
-    public boolean findByEmail(String email) {
-        Boolean status;
+    public User findByEmail(String email) {
+        Collection<User>result;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            User result = (User) session.createQuery("from todo_user u where u.email = :email").setParameter("email", email).getResultList();
-            if (result.getEmail() == email) {
-                status = true;
-            } else {
-                status = false;
-            }
-            return status;
+            result = session.createQuery("from User u where u.email = :email").setParameter("email", email).getResultList();
+            return (User) result;
         }
     }
 

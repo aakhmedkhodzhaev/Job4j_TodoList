@@ -10,7 +10,7 @@ public interface Registration {
 
     boolean dropUser(Long id);
 
-    boolean findByEmail(String email);
+    User findByEmail(String email);
 
     User getById(Long id);
 
