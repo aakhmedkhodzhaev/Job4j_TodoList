@@ -31,7 +31,7 @@ public class AuthController extends HttpServlet {
             user.setName(user.getName());
             user.setPassword(user.getPassword());
             sc.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath() + "home.jsp");
+            resp.sendRedirect(req.getContextPath() + "info.jsp");
         } else {
             req.setAttribute("error", "Не верный email или пероль");
             req.getRequestDispatcher("req.jsp").forward(req, resp);
