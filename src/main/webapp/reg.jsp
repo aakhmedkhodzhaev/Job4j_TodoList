@@ -1,13 +1,12 @@
 <%--
   Created by IntelliJ IDEA.
   User: Akhmedkhodzhaev A.A.
-  Date: 24.11.2020
-  Time: 21:27
+  Date: 28.11.2020
+  Time: 0:05
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=UTF-8" %>
-<!doctype html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -37,7 +36,7 @@
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="personal-style.css">
 
-    <title>Работа HelpDesk</title>
+    <title>Регистрация нового пользователя</title>
 </head>
 <body>
 <style>
@@ -45,16 +44,13 @@
         background-image: url(https://wallpapertag.com/wallpaper/full/c/a/a/157415-simplistic-wallpapers-1920x1080-lockscreen.jpg)
     }
 
-    #window-header {
-        font-size: 55px;
-        font-family: "Times New Roman";
-        border-bottom-style: ridge;
-        color: white;
+    a {
+        text-decoration: none; /* Отменяем подчеркивание у ссылки */
     }
 
     #autho {
         font-size: 47px;
-        font-family: arabic typesetting;
+        font-family: "Times New Roman";
         border-bottom-style: ridge;
         color: white;
     }
@@ -72,14 +68,26 @@
         color: white;
     }
 
+    #iconns {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+        color: white;
+    }
+
     #iconn1 {
         background-color: #5cb85c;
         border-color: #4cae4c;
         color: white;
     }
 
+    #iconn2 {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+        color: white;
+    }
+
     .user {
-        font-size: 25px;
+        font-size: 20px;
         font-family: arabic typesetting;
         color: white;
     }
@@ -87,17 +95,24 @@
 </style>
 <script>
     var vEmail = $('#email').val(),
+        vName = $('#name').val(),
         vPassword = $('#pwd').val(),
+        vConfirmPassword = $('#pwdconf').val(),
         result = false;
 
     function validate() {
-        if (vEmail.length < 5 || vPassword.length < 1) {
+        if (vEmail.length < 5 || vName.length < 1 || vPassword.length < 1) {
             alert("пожалуйста заполните поля")
         } else if (vEmail == '') {
             alert(vEmail.attr('title'));
+        } else if (vName == '') {
+            alert(vName.attr('title'));
         } else if (vPassword == '') {
             alert(vPassword.attr('title'));
-        } else {
+        } else if (vConfirmPassword != vPassword) {
+            alert(vConfirmPassword.attr('title'));
+        }
+        else {
             result = true;
         }
         return result;
@@ -105,18 +120,25 @@
 </script>
 <div class="container">
     <div class="card-header">
-        <center><h1 id="window-header"> Помощник по работе с заявками </h1></center>
-        <center><b id="autho"> Авторизация</b></center>
+        <center><h2 id="autho">Регистрация</h2></center>
     </div>
     <div class="card-body">
         <div class="col-md-6 col-md-offset-3" id="login">
-            <form action="<%=request.getContextPath()%>/auth.do" method="post">
+            <form action="<%=request.getContextPath()%>/reg.do" method="post">
                 <div class="form-group">
                     <label class="user">Email:</label>
                     <div class="input-group">
                         <span class="input-group-addon" id="iconn"> <i class="glyphicon glyphicon-user"></i></span>
                         <input type="email" class="form-control" id="email" name="email" title="Enter Email"
-                               placeholder="Enter Email">
+                               placeholder="Example@email.org">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="user">Name:</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="iconns"> <i class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" class="form-control" id="name" name="name" title="Enter Your Name"
+                               placeholder="Example Name">
                     </div>
                 </div>
                 <div class="form-group">
@@ -128,32 +150,31 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success" onclick="validate()" style="border-radius:5px;">
-                        <Войти></Войти>
-                    </button>
-                    <button type="reset" class="btn btn-danger" style="border-radius:5px;">
-                        Очистить
-                    </button>
-                    <div class="row">
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="<%=request.getContextPath()%>/reg.do"
-                                   style="color: black; font-size: 15px; float: right; margin-right: 10px;">
-                                    Регистрация </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<%=request.getContextPath()%>/rest.do"
-                                   style="color: black; font-size: 15px; float: right; margin-right: 10px;">
-                                    Восстановления пароля </a>
-                            </li>
-                        </ul>
+                    <label class="user">Confirm Password:</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="iconn2"> <i class="glyphicon glyphicon-lock"></i></span>
+                        <input type="password" class="form-control" id="pwdconf" name="pwdconf" title="Confirm Password"
+                               placeholder="Confirm Password">
                     </div>
                 </div>
+                <button type="submit" class="btn btn-success" onclick="validate()"
+                        style="border-radius:5px;">
+                    Создать
+                </button>
+                <button type="reset" class="btn btn-danger" style="border-radius:5px;">
+                    Очистить
+                </button>
                 <br/>
-                <br/>
+                <button type="submit" class="btn btn-default" style="border-radius:5px;">
+                    <a href="<%=request.getContextPath()%>/auth.do"
+                       style="color: black; font-size: 15px; float: right; margin-right: 10px;">
+                        Отмена</a>
+                </button>
             </form>
         </div>
+        </center>
     </div>
+</div>
 </div>
 </body>
 </html>

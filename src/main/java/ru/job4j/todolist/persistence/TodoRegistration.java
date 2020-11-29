@@ -1,5 +1,6 @@
 package ru.job4j.todolist.persistence;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,8 +10,13 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class TodoRegistration implements Registration, AutoCloseable {
@@ -73,12 +79,25 @@ public class TodoRegistration implements Registration, AutoCloseable {
 
     @Override
     public User findByEmail(String email) {
-        Collection<User>result;
+        User result;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            result = session.createQuery("from User u where u.email = :email").setParameter("email", email).getResultList();
-            return (User) result;
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<User> cr = cb.createQuery(User.class);
+            Root<User> root = cr.from(User.class);
+            cr.select(root).where(cb.equal(root.get("email"), email));
+
+            Query query = session.createQuery(cr);
+            query.setMaxResults(1);
+            List<User> users = query.getResultList();
+            if (users.size() == 0) {
+                result = null;
+            } else {
+                result = users.get(0);
+            }
         }
+        return result;
     }
 
     @Override
@@ -96,7 +115,21 @@ public class TodoRegistration implements Registration, AutoCloseable {
         User user;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            user = (User) session.createQuery("from User t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<User> cr = cb.createQuery(User.class);
+            Root<User> root = cr.from(User.class);
+            cr.select(root).where(cb.equal(root.get("email"), email), cb.equal(root.get("password"), password));
+            // session.createQuery("from User t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
+
+            Query query = session.createQuery(cr);
+            query.setMaxResults(1);
+            List<User> users = query.getResultList();
+            if (users.size() == 0) {
+                user = null;
+            } else {
+                user = users.get(0);
+            }
         }
         return user;
     }

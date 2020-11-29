@@ -16,7 +16,7 @@ public class AuthController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
+        req.getRequestDispatcher("start.jsp").forward(req, resp);
     }
 
     @Override
@@ -31,10 +31,10 @@ public class AuthController extends HttpServlet {
             user.setName(user.getName());
             user.setPassword(user.getPassword());
             sc.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath() + "info.jsp");
+            resp.sendRedirect(req.getContextPath() + "/info.do");
         } else {
             req.setAttribute("error", "Не верный email или пероль");
-            req.getRequestDispatcher("req.jsp").forward(req, resp);
+            req.getRequestDispatcher("/reg.do").forward(req, resp);
         }
     }
 }

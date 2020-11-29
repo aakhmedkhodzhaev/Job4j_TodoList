@@ -20,7 +20,7 @@ public class RegController extends HttpServlet {
         if (user.getName() != null) {
             req.setAttribute("email", TodoRegistration.getInstance().findByEmail(user.getName()));
         }
-        req.getRequestDispatcher("req.jsp").forward(req, resp);
+        req.getRequestDispatcher("reg.jsp").forward(req, resp);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class RegController extends HttpServlet {
                 password = req.getParameter("password");
 
         req.setCharacterEncoding("UTF-8");
-        if (TodoRegistration.getInstance().findByEmail(email) == false
+        if (TodoRegistration.getInstance().findByEmail(email) == null
                 && name != "" && password != ""
-                && email.length() > 5 && name.length() > 5 && password.length() > 5) {
+                && email.length() > 5 && name.length() > 3 && password.length() > 0) {
             TodoRegistration.getInstance().save(
                     new User(
                             email,
@@ -40,9 +40,9 @@ public class RegController extends HttpServlet {
                             password
                     )
             );
-            resp.sendRedirect(req.getContextPath() + "/index.do");
+            resp.sendRedirect(req.getContextPath() + "/auth.do");
         } else {
-            resp.sendRedirect(req.getContextPath() + "/req.do");
+            resp.sendRedirect(req.getContextPath() + "/reg.do");
         }
     }
 

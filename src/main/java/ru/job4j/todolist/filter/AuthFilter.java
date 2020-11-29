@@ -28,7 +28,7 @@ public class AuthFilter implements Filter {
         }
 
         if (req.getSession().getAttribute("user") == null) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/start.jsp");
             return;
         }
 
