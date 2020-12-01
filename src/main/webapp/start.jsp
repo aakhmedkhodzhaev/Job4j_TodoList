@@ -129,7 +129,7 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success" onclick="validate()" style="border-radius:5px;">
-                        <Войти></Войти>
+                        Войти
                     </button>
                     <button type="reset" class="btn btn-danger" style="border-radius:5px;">
                         Очистить
