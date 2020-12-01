@@ -126,6 +126,13 @@
                         <input type="password" class="form-control" id="pwd" name="password" title="Enter Password"
                                placeholder="Enter Password">
                     </div>
+                    <div class="input-group">
+                        <tr>
+                            <td><input type="checkbox" name="rememberMe" class="user" value="Y">&nbsp;<font size="3"
+                                                                                                      face="Times New Roman">Запомнить</font>
+                            </td>
+                        </tr>
+                    </div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success" onclick="validate()" style="border-radius:5px;">

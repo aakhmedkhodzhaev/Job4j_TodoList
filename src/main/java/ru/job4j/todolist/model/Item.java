@@ -13,13 +13,17 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "item")
+@Table(name = "todo_item")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "description")
     private String description;
@@ -31,6 +35,13 @@ public class Item {
     private Boolean done;
 
     public Item() {
+    }
+
+    public static Item of(String description, User user) {
+        Item item = new Item();
+        item.description = description;
+        item.user = user;
+        return item;
     }
 
 
@@ -45,8 +56,9 @@ public class Item {
         this.done = done;
     }
 
-    public Item(Long id, String description, LocalDate created, Boolean done) {
+    public Item(Long id, User user, String description, LocalDate created, Boolean done) {
         this.id = id;
+        this.user = user;
         this.description = description;
         this.created = created;
         this.done = done;
@@ -80,6 +92,14 @@ public class Item {
         return done;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void setDone(Boolean done) {
         this.done = done;
     }
@@ -104,6 +124,7 @@ public class Item {
         return "{" +
                 "\"id\"" + ":" + id + "," +
                 "\"description\"" + ":" + "\"" + description + "\"," +
+                "\"user\"" + ":" + "\"" + user + "\"," +
                 "\"created\"" + ":" + "\"" + created + "\"," +
                 "\"done\"" + ":" + "\"" + done + "\"" +
                 "}";

@@ -2,7 +2,6 @@ package ru.job4j.todolist.controller;
 
 import ru.job4j.todolist.model.User;
 import ru.job4j.todolist.persistence.TodoRegistration;
-import ru.job4j.todolist.persistence.TodoStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

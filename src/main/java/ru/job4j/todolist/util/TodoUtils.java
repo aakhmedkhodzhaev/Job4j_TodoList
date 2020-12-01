@@ -9,8 +9,6 @@ import javax.servlet.http.HttpSession;
 
 public class TodoUtils {
 
-    private static final long SerialVersionUID = 1L;
-
     public static final String CONNECTION_NAME = "ATTRIBUTE_FOR_CONNECTION";
 
     public static final String USER_NAME = "ATTRIBUTE_USER_NAME";

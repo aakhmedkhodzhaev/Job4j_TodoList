@@ -1,5 +1,12 @@
 package ru.job4j.todolist.model;
 
+/**
+ * @author Akhmedkhodzhaev A.A.
+ * @version 1.0 19.11.2020
+ * @task 2. Создать TODO list [3786#329659]
+ * @aim Работа с динамической веб страницей
+ * @others В index.html можно добавлять задачи, изменять статус
+ */
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -30,6 +37,12 @@ public class User {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public static User of(Long id) {
+        User user = new User();
+        user.id = id;
+        return user;
     }
 
     public static User of(String name) {

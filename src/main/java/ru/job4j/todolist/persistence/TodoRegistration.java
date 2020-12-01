@@ -1,6 +1,5 @@
 package ru.job4j.todolist.persistence;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,7 +13,6 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,7 +25,7 @@ public class TodoRegistration implements Registration, AutoCloseable {
         return INSTANCE;
     }
 
-    private static final Logger Log = Logger.getLogger(Item.class.toString());
+    private static final Logger LOG = Logger.getLogger(Item.class.toString());
 
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
@@ -72,6 +70,7 @@ public class TodoRegistration implements Registration, AutoCloseable {
                 status = true;
             } else {
                 status = false;
+                LOG.info("You can't just take and Drop User");
             }
             return status;
         }
@@ -120,7 +119,6 @@ public class TodoRegistration implements Registration, AutoCloseable {
             CriteriaQuery<User> cr = cb.createQuery(User.class);
             Root<User> root = cr.from(User.class);
             cr.select(root).where(cb.equal(root.get("email"), email), cb.equal(root.get("password"), password));
-            // session.createQuery("from User t where t.email = :email and t.password = :password").setParameter(email, password).getResultList();
 
             Query query = session.createQuery(cr);
             query.setMaxResults(1);

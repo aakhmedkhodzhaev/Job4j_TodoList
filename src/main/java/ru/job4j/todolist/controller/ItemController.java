@@ -1,13 +1,17 @@
 package ru.job4j.todolist.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Session;
 import ru.job4j.todolist.model.Item;
+import ru.job4j.todolist.model.User;
 import ru.job4j.todolist.persistence.TodoStore;
+import ru.job4j.todolist.util.TodoUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,6 +53,9 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = TodoUtils.getLoginedUser(session); // (User) session.getAttribute("loginedUser");
+        Long userId = user.getId();
         req.setCharacterEncoding("UTF-8");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String json = "";
@@ -60,14 +67,13 @@ public class ItemController extends HttpServlet {
         Item item = mapper.readValue(json, Item.class);
         Long itemId = item.getId();
         resp.setContentType("application/json");
-     if (itemId == null || itemId == 0) {
+        if (itemId == null || itemId == 0) {
+            item.setUser(User.of(userId));
             TodoStore.getInstance().addTask(item);
         } else {
-         Item result = TodoStore.getInstance().getById(itemId);
-         TodoStore.getInstance().updateTask(result);
+            Item result = TodoStore.getInstance().getById(itemId);
+            TodoStore.getInstance().updateTask(result);
         }
-        item.getDone();
-        item.getDone();
         mapper.writeValue(resp.getOutputStream(), item);
     }
 }
