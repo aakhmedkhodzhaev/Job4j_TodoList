@@ -49,7 +49,6 @@ public class TodoRegistration implements Registration, AutoCloseable {
         }
     }
 
-
     private void updateUser(User user) {
         try (Session session = sf.openSession()) {
             session.beginTransaction();
