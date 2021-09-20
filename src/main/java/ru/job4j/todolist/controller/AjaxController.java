@@ -30,8 +30,9 @@ public class AjaxController extends HttpServlet {
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         req.setCharacterEncoding("UTF-8");
         String id = req.getParameter("id");
+        String [] categories = req.getParameterValues("cIds");
         String description = req.getParameter("description");
-        TodoStore.getInstance().addTask(new Item(Long.valueOf(id), description));
+        TodoStore.getInstance().addTask(new Item(Long.valueOf(id), description), categories);
 
         resp.sendRedirect(req.getContextPath()+"/ajax");
     }

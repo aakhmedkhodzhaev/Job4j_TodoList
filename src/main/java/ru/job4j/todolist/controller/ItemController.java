@@ -2,6 +2,7 @@ package ru.job4j.todolist.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.Session;
+import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 import ru.job4j.todolist.persistence.TodoStore;
@@ -18,6 +19,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemController extends HttpServlet {
 
@@ -56,20 +59,23 @@ public class ItemController extends HttpServlet {
         HttpSession session = req.getSession();
         User user = TodoUtils.getLoginedUser(session); // (User) session.getAttribute("loginedUser");
         Long userId = user.getId();
-        req.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8"); // Map<String, String[]> cat = req.getParameterMap();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String json = "";
         if (bufferedReader != null) {
             json = bufferedReader.readLine();
         }
-
+        Map<String, String> map = new HashMap<>();
+        map.put("json", json);
+        System.out.println(map);
+        String [] categories = req.getParameterValues(String.valueOf(map.get("cIds")));
         ObjectMapper mapper = new ObjectMapper();
         Item item = mapper.readValue(json, Item.class);
         Long itemId = item.getId();
         resp.setContentType("application/json");
         if (itemId == null || itemId == 0) {
             item.setUser(User.of(userId));
-            TodoStore.getInstance().addTask(item);
+            TodoStore.getInstance().addTask(item, categories);
         } else {
             Item result = TodoStore.getInstance().getById(itemId);
             TodoStore.getInstance().updateTask(result);

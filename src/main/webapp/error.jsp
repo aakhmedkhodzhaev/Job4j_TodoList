@@ -484,8 +484,14 @@
     <div class="error__title">404</div>
     <div class="error__subtitle">Hmmm...</div>
     <div class="error__description">It looks like one of the developers fell asleep</div>
-    <button class="error__button error__button--active">LOGIN</button>
-    <button class="error__button">CONTACT</button>
+    <button class="error__button error__button--active">
+        <a href="<%=request.getContextPath()%>/auth.do"
+           style="color: black; font-size: 15px; float: right; margin-right: 10px;">
+            LOGIN</a>
+        </button>
+    <button class="error__button">
+        <a href="<%=request.getContextPath()%>/reg.do"
+           style="color: black; font-size: 15px; float: right; margin-right: 10px;">REGISTRATION</a></button>
 </div>
 
 <div class="astronaut">

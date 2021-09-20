@@ -10,6 +10,8 @@ package ru.job4j.todolist.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -34,7 +36,15 @@ public class Item {
     @Column(name = "done")
     private Boolean done;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Category> categories = new ArrayList<>();
+
+
     public Item() {
+    }
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
     }
 
     public static Item of(String description, User user) {
@@ -43,7 +53,6 @@ public class Item {
         item.user = user;
         return item;
     }
-
 
     public Item(Long id, String description) {
         this.id = id;

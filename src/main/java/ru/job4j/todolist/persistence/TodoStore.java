@@ -6,11 +6,13 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -46,9 +48,13 @@ public class TodoStore implements Store, AutoCloseable {
 
 
     @Override
-    public Serializable addTask(Item item) {
+    public Serializable addTask(Item item, String[] cids) {
         item.setCreated(LocalDate.now());
         item.setDone(false);
+        for (String id : cids) {
+            Category category = tx(session -> session.find(Category.class, Long.parseLong(id)));
+            item.addCategory(category);
+        }
         return this.tx(session -> session.save(item));
     }
 
@@ -96,6 +102,11 @@ public class TodoStore implements Store, AutoCloseable {
     @Override
     public Collection<Item> getAllTask() {
         return this.tx(session -> session.createQuery("from Item order by 1").list());
+    }
+
+    @Override
+    public List<Category> getAllCategory() {
+        return this.tx(session -> session.createQuery("from Category order by 1").list());
     }
 
     @Override

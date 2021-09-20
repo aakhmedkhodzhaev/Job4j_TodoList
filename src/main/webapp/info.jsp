@@ -5,7 +5,8 @@
   Time: 21:24
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page language="java"  contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -70,7 +71,8 @@
 
     <!-- add new task-->
     function addTask() {
-        var desc = $('#newItemDescription').val();
+        var desc = $('#newItemDescription').val(),
+            cIds = $('#cIds').val();
         if (!/[^ ]/.test(desc)) {
             alert("Input description of task");
             return;
@@ -78,15 +80,16 @@
         $.ajax("./json", {
             type: "post",
             data: JSON.stringify({
-                description: desc
+                description: desc,
+                cIds: cIds
             }),
             dataType: "json"
         }).done(function (data) {
             if (data.success === true) {
                 alert("Task was added");
                 alert(data.created);
-                var rowToAdd = '<tr><td>' + data.id + '</td><td>' + data.description + '</td><td>'
-                    + data.created + '</td><td>'
+                var rowToAdd = '<tr><td>' + data.id +'</td><td>' + data.cIds + '</td><td>'
+                    + data.description + '</td><td>'+ data.created + '</td><td>'
                     + '<input type="checkbox" id="' + data.id + '" onchange="changeStatus(this.id)">' + '</td></tr>';
                 $("#todo_list").append(rowToAdd);
             }
@@ -117,11 +120,9 @@
     function statusBox(id) {
         if (id === "true") {
             getTodoList("true");
-        }
-        else if (id === "false") {
+        } else if (id === "false") {
             getTodoList("false");
-        }
-        else {
+        } else {
             getTodoList("all");
         }
     }
@@ -155,7 +156,7 @@
         <div class="card" style="width: 100%">
             <div class="card-header">
                 <h3 type="text" name="userid"> Персональное Id пользователя: ${user.id}</h3>
-                    <h3>Добро пожаловать: ${user.name}</h3>
+                <h3>Добро пожаловать: ${user.name}</h3>
             </div>
             <div class="card-body">
                 Имя пользователя: <b>${user.name}</b>
@@ -171,6 +172,16 @@
             <div class="card-body">
                 <h5>
                     <form>
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-3" for="cIds" style="font-weight: 900">Тип категории</label>
+                            <div class="col-sm-5">
+                                <select class="form-control" name="cIds" id="cIds" multiple>
+                                    <c:forEach items="${allCategories}" var="category">
+                                        <option value='<c:out value="${category.id}"/>'>${category.name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
                         <input type="text" id="newItemDescription" required pattern="^[a-zA-Z]+$">
                         <input type="button" value="Добавление новой заявки" onclick="addTask()">
                     </form>
