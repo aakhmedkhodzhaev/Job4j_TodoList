@@ -65,12 +65,17 @@ public class ItemController extends HttpServlet {
         if (bufferedReader != null) {
             json = bufferedReader.readLine();
         }
-        Map<String, String> map = new HashMap<>();
-        map.put("json", json);
-        System.out.println(map);
-        String [] categories = req.getParameterValues(String.valueOf(map.get("cIds")));
+
+        String description = json.substring(16, json.indexOf(",")-1);
+        String itemDescription = "{\"description\":" + "\"" + description+ "\"" + "}";
+
+        String cIds = json.substring(json.indexOf("[")+2, json.indexOf("}")-2);
+        String[] strArray = new String[] {cIds};
+
+        String [] categories = strArray;
+
         ObjectMapper mapper = new ObjectMapper();
-        Item item = mapper.readValue(json, Item.class);
+        Item item = mapper.readValue(itemDescription, Item.class);
         Long itemId = item.getId();
         resp.setContentType("application/json");
         if (itemId == null || itemId == 0) {
