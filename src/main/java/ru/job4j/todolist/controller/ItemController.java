@@ -2,6 +2,7 @@ package ru.job4j.todolist.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.Session;
+import ru.job4j.todolist.dto.NItem;
 import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ItemController extends HttpServlet {
 
@@ -65,26 +67,21 @@ public class ItemController extends HttpServlet {
         if (bufferedReader != null) {
             json = bufferedReader.readLine();
         }
-
-        String description = json.substring(16, json.indexOf(",")-1);
-        String itemDescription = "{\"description\":" + "\"" + description+ "\"" + "}";
-
-        String cIds = json.substring(json.indexOf("[")+2, json.indexOf("}")-2);
-        String[] strArray = new String[] {cIds};
-
-        String [] categories = strArray;
-
         ObjectMapper mapper = new ObjectMapper();
-        Item item = mapper.readValue(itemDescription, Item.class);
-        Long itemId = item.getId();
+        NItem nitem = mapper.readValue(json, NItem.class);
+        Long itemId = nitem.getId();
         resp.setContentType("application/json");
         if (itemId == null || itemId == 0) {
+            Item item = new Item();
             item.setUser(User.of(userId));
-            TodoStore.getInstance().addTask(item, categories);
+            if(nitem.getDescription() != null){
+            item.setDescription(nitem.getDescription());
+            }
+            TodoStore.getInstance().addTask(item, nitem.getcIds());
         } else {
             Item result = TodoStore.getInstance().getById(itemId);
             TodoStore.getInstance().updateTask(result);
         }
-        mapper.writeValue(resp.getOutputStream(), item);
+        mapper.writeValue(resp.getOutputStream(), nitem);
     }
 }
