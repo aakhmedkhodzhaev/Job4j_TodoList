@@ -8,11 +8,9 @@ package ru.job4j.todolist.model;
  * @others В index.html можно добавлять задачи, изменять статус
  */
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +30,6 @@ public class Item {
     @Column(name = "description")
     private String description;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd HH:mm:ss", timezone = "Europe/Moscow")
     @Column(name = "created")
     private LocalDate created;
 
