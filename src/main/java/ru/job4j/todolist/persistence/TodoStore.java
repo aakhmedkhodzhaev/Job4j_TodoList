@@ -12,7 +12,6 @@ import ru.job4j.todolist.model.Item;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -50,8 +49,7 @@ public class TodoStore implements Store, AutoCloseable {
 
     @Override
     public Serializable addTask(Item item, String[] cids) {
-        Date date = new Date(System.currentTimeMillis());
-        item.setCreated(date);
+        item.setCreated(LocalDate.now());
         item.setDone(false);
         for (String id : cids) {
             Category category = tx(session -> session.find(Category.class, Long.parseLong(id)));

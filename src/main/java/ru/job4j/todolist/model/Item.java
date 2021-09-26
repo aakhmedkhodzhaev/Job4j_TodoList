@@ -11,8 +11,8 @@ package ru.job4j.todolist.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +35,7 @@ public class Item {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd HH:mm:ss", timezone = "Europe/Moscow")
     @Column(name = "created")
-    private Date created;
+    private LocalDate created;
 
     @Column(name = "done")
     private Boolean done;
@@ -63,13 +63,13 @@ public class Item {
         this.description = description;
     }
 
-    public Item(String description, Date created, Boolean done) {
+    public Item(String description, LocalDate created, Boolean done) {
         this.description = description;
         this.created = created;
         this.done = done;
     }
 
-    public Item(Long id, User user, String description, Date created, Boolean done) {
+    public Item(Long id, User user, String description, LocalDate created, Boolean done) {
         this.id = id;
         this.user = user;
         this.description = description;
@@ -93,11 +93,11 @@ public class Item {
         this.description = description;
     }
 
-    public Date getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 
